@@ -38,6 +38,7 @@ const LoginForm = () => {
     try {
       const response = await login({ username, password }).unwrap();
       if (response) {
+        document.cookie = `access_token=${response.token}`;
         dispatch(checkSuccess(response));
       } else {
         dispatch(checkFailure(response));

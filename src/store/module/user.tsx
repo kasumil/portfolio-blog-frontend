@@ -8,7 +8,6 @@ interface UserState {
 
 const initialState: UserState = {
   user: null,
-  token: null,
   checkError: null,
 };
 
@@ -21,7 +20,6 @@ const userSlice = createSlice({
     },
     checkSuccess: (state, { payload }: PayloadAction<string>) => {
       state.user = payload.user;
-      state.token = payload.token;
       state.checkError = null;
     },
     checkFailure: (state, { payload }: PayloadAction<string>) => {

@@ -1,13 +1,19 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { get } from 'http';
 
+const getCookie = (name) => {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(';').shift();
+};
+
 export const apiSlice = createApi({
   reducerPath: 'api',
   baseQuery: fetchBaseQuery({
     baseUrl: 'http://localhost:4000/api', // API 기본 경로
     prepareHeaders: (headers, { getState }) => {
       // 예: 인증 토큰 추가
-      const token = getState().user.token;
+      const token = getCookie('access_token');
       if (token) {
         headers.set('Authorization', `Bearer ${token}`);
       }

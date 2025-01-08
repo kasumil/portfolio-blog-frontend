@@ -1,9 +1,9 @@
 'use client';
 
-import { useSelector } from 'react-redux';
+import { useGetCheckQuery } from '@/lib/api/client';
 
 export default function Home() {
-  const { token } = useSelector((state) => state.user);
-  console.log(token);
+  const { data: check, isLoading, error } = useGetCheckQuery();
+  console.log(error, isLoading, check);
   return <div>홈</div>;
 }
