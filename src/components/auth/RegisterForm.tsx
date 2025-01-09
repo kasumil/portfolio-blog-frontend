@@ -9,6 +9,7 @@ import {
 import { checkSuccess } from '@/store/module/user';
 import { useGetCheckMutation, usePostRegisterMutation } from '@/lib/api/client';
 import { useRouter } from 'next/navigation';
+import { createSelector } from '@reduxjs/toolkit';
 
 const RegisterForm = () => {
   const router = useRouter();
@@ -19,13 +20,18 @@ const RegisterForm = () => {
     loginCheck,
     { data: check, error: checkError, isLoading: checkIsLoading },
   ] = useGetCheckMutation();
-  const { form, auth, authError, user } = useSelector(({ auth, user }) => ({
-    form: auth.register,
-    auth: auth.auth,
-    authError: auth.authError,
-    user: user.user,
-  }));
+  const selectAuthAndUser = createSelector(
+    (state: Object) => state.auth,
+    (state: Object) => state.user,
+    (auth, user) => ({
+      form: auth.register,
+      auth: auth.auth,
+      authError: auth.authError,
+      user: user.user,
+    }),
+  );
 
+  const { form, auth, authError, user } = useSelector(selectAuthAndUser);
   const dispatch = useDispatch();
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {

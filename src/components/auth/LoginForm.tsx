@@ -1,22 +1,33 @@
-import React, { useEffect } from 'react';
+'use client';
+
+import React, { useEffect, useState } from 'react';
 import AuthForm from './AuthForm';
 import { useDispatch, useSelector } from 'react-redux';
-import { changeField, initializeForm } from '@/store/module/auth';
+import { changeField, initializeForm, loginFailure } from '@/store/module/auth';
+import { createSelector } from 'reselect';
 import { useGetCheckMutation, usePostLoginMutation } from '@/lib/api/client';
 import { useRouter } from 'next/navigation';
 import { checkFailure, checkSuccess } from '@/store/module/user';
 
 const LoginForm = () => {
   const router = useRouter();
-  const [login, { isLoading, error }] = usePostLoginMutation();
+  const [error, setError] = useState('');
+  const [login, { isLoading: loginLoading, error: loginError }] =
+    usePostLoginMutation();
   const [
     loginCheck,
     { data: check, error: checkError, isLoading: checkIsLoading },
   ] = useGetCheckMutation();
-  const { form, user } = useSelector(({ auth, user }) => ({
-    form: auth.login,
-    user: user.user,
-  }));
+  const selectAuthAndUser = createSelector(
+    (state: Object) => state.auth,
+    (state: Object) => state.user,
+    (auth, user) => ({
+      form: auth.login,
+      user: user.user,
+    }),
+  );
+
+  const { form, user } = useSelector(selectAuthAndUser);
   const dispatch = useDispatch();
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -43,7 +54,8 @@ const LoginForm = () => {
         dispatch(checkFailure(response));
       }
     } catch (err) {
-      console.error('Failed to login:', err);
+      dispatch(loginFailure({ status: err.status, message: err.data }));
+      setError(err.data);
     }
   };
 
