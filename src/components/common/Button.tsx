@@ -1,11 +1,13 @@
 'use client';
 
 import palette from '@/lib/styles/palette';
+import { NavigateAction } from 'next/dist/client/components/router-reducer/router-reducer-types';
 import React from 'react';
 import styled, { css } from 'styled-components';
 
 type Props = {
   props: React.HTMLProps;
+  href: NavigateAction;
 };
 
 const StyledButton = styled.button`
@@ -41,8 +43,16 @@ const StyledButton = styled.button`
       }
     `};
 `;
-const Button = (props: Props) => {
-  return <StyledButton {...props} />;
+const Button = ({ href, router, ...rest }) => {
+  const onClick = (e) => {
+    if (href) {
+      router.push(href);
+    }
+    if (rest.onClick) {
+      rest.onClick(e);
+    }
+  };
+  return <StyledButton {...rest} onClick={onClick} />;
 };
 
 export default Button;

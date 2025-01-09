@@ -38,7 +38,7 @@ export const apiSlice = createApi({
         body: data,
       }),
     }),
-    getCheck: builder.query({
+    getCheck: builder.mutation({
       query: () => '/auth/check',
     }),
     // 1. 모든 포스트 가져오기
@@ -83,7 +83,7 @@ export const apiSlice = createApi({
 export const {
   usePostRegisterMutation,
   usePostLoginMutation,
-  useGetCheckQuery,
+  useGetCheckMutation,
   useGetPostsQuery,
   useGetPostByIdQuery,
   useCreatePostMutation,

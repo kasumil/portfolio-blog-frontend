@@ -2,18 +2,17 @@ import React, { useEffect } from 'react';
 import AuthForm from './AuthForm';
 import { useDispatch, useSelector } from 'react-redux';
 import { changeField, initializeForm } from '@/store/module/auth';
-import { useGetCheckQuery, usePostLoginMutation } from '@/lib/api/client';
+import { useGetCheckMutation, usePostLoginMutation } from '@/lib/api/client';
 import { useRouter } from 'next/navigation';
 import { checkFailure, checkSuccess } from '@/store/module/user';
 
 const LoginForm = () => {
   const router = useRouter();
   const [login, { isLoading, error }] = usePostLoginMutation();
-  const {
-    data: check,
-    error: checkError,
-    isLoading: checkIsLoading,
-  } = useGetCheckQuery();
+  const [
+    loginCheck,
+    { data: check, error: checkError, isLoading: checkIsLoading },
+  ] = useGetCheckMutation();
   const { form, user } = useSelector(({ auth, user }) => ({
     form: auth.login,
     user: user.user,
@@ -60,10 +59,10 @@ const LoginForm = () => {
     }
     if (check) {
       console.log('로그인 성공');
-      console.log(user);
-      dispatch(check());
+      console.log(check);
+      loginCheck();
     }
-  }, [check, checkError, dispatch]);
+  }, [check, checkError]);
 
   useEffect(() => {
     if (user) {
@@ -77,6 +76,7 @@ const LoginForm = () => {
       form={form}
       onChange={onChange}
       onSubmit={onSubmit}
+      error={error}
     />
   );
 };

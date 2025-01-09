@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import InputField from '@/components/common/InputField';
 import Button from '@/components/common/Button';
@@ -10,6 +10,7 @@ type Props = {
   form: { username: string; password: string; passwordConfirm: string };
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onSubmit: (e: React.FormEvent) => void;
+  error: string | null;
 };
 
 const textMap = {
@@ -33,7 +34,14 @@ const Footer = styled.div`
     }
 `;
 
-const AuthForm = ({ type, form, onChange, onSubmit }: Props) => {
+const ErrorMessage = styled.div`
+  color: red;
+  text-align: center;
+  font-size: 0.875rem;
+  margin-top: 1rem;
+`;
+
+const AuthForm = ({ type, form, onChange, onSubmit, error }: Props) => {
   const text = textMap[type];
   return (
     <>
@@ -62,6 +70,7 @@ const AuthForm = ({ type, form, onChange, onSubmit }: Props) => {
             placeholder="비밀번호 확인"
           />
         )}
+        {error && <ErrorMessage>{error}</ErrorMessage>}
         <ButtonWidthMarginTop cyan={true} fullWidth={true} type="submit">
           {text}
         </ButtonWidthMarginTop>

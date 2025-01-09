@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import AuthForm from './AuthForm';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -7,17 +7,18 @@ import {
   registerFailure,
 } from '@/store/module/auth';
 import { checkSuccess } from '@/store/module/user';
-import { useGetCheckQuery, usePostRegisterMutation } from '@/lib/api/client';
+import { useGetCheckMutation, usePostRegisterMutation } from '@/lib/api/client';
 import { useRouter } from 'next/navigation';
 
 const RegisterForm = () => {
   const router = useRouter();
-  const [register, { isLoading, error }] = usePostRegisterMutation();
-  const {
-    data: check,
-    error: checkError,
-    isLoading: checkIsLoading,
-  } = useGetCheckQuery();
+  const [error, setError] = useState('');
+  const [register, { isLoading: registerLoading, error: registerError }] =
+    usePostRegisterMutation();
+  const [
+    loginCheck,
+    { data: check, error: checkError, isLoading: checkIsLoading },
+  ] = useGetCheckMutation();
   const { form, auth, authError, user } = useSelector(({ auth, user }) => ({
     form: auth.register,
     auth: auth.auth,
@@ -41,9 +42,17 @@ const RegisterForm = () => {
     e.preventDefault();
     // Implement login action
     const { username, password, passwordConfirm } = form;
+    if ([username, password, passwordConfirm].includes('')) {
+      setError('빈 칸을 모두 입력해주세요');
+      return;
+    }
     if (password !== passwordConfirm) {
       // 비밀번호 다르다고 출력
-      console.log('언매칭');
+      setError('비밀번호가 일치하지 않습니다');
+      dispatch(changeField({ form: 'register', key: 'password', value: '' }));
+      dispatch(
+        changeField({ form: 'register', key: 'passwordConfirm', value: '' }),
+      );
       return;
     }
 
@@ -53,7 +62,11 @@ const RegisterForm = () => {
         dispatch(checkSuccess({ id: ret._id, username }));
       }
     } catch (err) {
-      dispatch(registerFailure('로그인 실패'));
+      if (err.originalStatus === 409) {
+        dispatch(registerFailure({ status: 409, message: 'Conflict' }));
+      } else {
+        dispatch(registerFailure({ status: err.status, message: err.data }));
+      }
     }
   };
 
@@ -63,14 +76,17 @@ const RegisterForm = () => {
 
   useEffect(() => {
     if (authError) {
-      console.log('로그인 Error');
-      console.log(authError);
+      if (authError.status === 409) {
+        setError('이미 존재하는 계정입니다');
+        return;
+      }
+      setError('회원가입 실패');
       return;
     }
     if (auth) {
       console.log('로그인 Success');
       console.log(auth);
-      console.log(check());
+      loginCheck();
     }
   }, [auth, authError, dispatch]);
 
@@ -86,6 +102,7 @@ const RegisterForm = () => {
       form={form}
       onChange={onChange}
       onSubmit={onSubmit}
+      error={error}
     />
   );
 };
