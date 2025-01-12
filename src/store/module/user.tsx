@@ -11,6 +11,14 @@ const initialState: UserState = {
   checkError: null,
 };
 
+const loginStorageRemove: void = () => {
+  try {
+    localStorage.removeItem('user');
+  } catch (e) {
+    console.log('localStorage is not working');
+  }
+};
+
 const userSlice = createSlice({
   name: 'user',
   initialState,
@@ -23,11 +31,18 @@ const userSlice = createSlice({
       state.checkError = null;
     },
     checkFailure: (state, { payload }: PayloadAction<string>) => {
-      state = { ...initialState };
+      state.user = initialState.user;
       state.checkError = payload;
+      loginStorageRemove();
+    },
+    userLogOut: (state) => {
+      state = state;
+      state.user = null;
+      loginStorageRemove();
     },
   },
 });
 
-export const { temSetUser, checkSuccess, checkFailure } = userSlice.actions;
+export const { temSetUser, checkSuccess, checkFailure, userLogOut } =
+  userSlice.actions;
 export default userSlice.reducer;

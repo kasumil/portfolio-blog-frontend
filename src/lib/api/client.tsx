@@ -41,6 +41,12 @@ export const apiSlice = createApi({
     getCheck: builder.mutation({
       query: () => '/auth/check',
     }),
+    postLogout: builder.mutation({
+      query: () => ({
+        url: '/auth/logout',
+        method: 'POST',
+      }),
+    }),
     // 1. 모든 포스트 가져오기
     getPosts: builder.query({
       query: () => '/posts',
@@ -83,6 +89,7 @@ export const apiSlice = createApi({
 export const {
   usePostRegisterMutation,
   usePostLoginMutation,
+  usePostLogoutMutation,
   useGetCheckMutation,
   useGetPostsQuery,
   useGetPostByIdQuery,

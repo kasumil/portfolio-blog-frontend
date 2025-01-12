@@ -1,9 +1,9 @@
-import Header from '@/components/common/Header';
+import HeaderConatiner from '@/components/common/HeaderConatiner';
 
 export default function Home() {
   return (
     <>
-      <Header />
+      <HeaderConatiner />
       <div>안녕하세요</div>
     </>
   );
