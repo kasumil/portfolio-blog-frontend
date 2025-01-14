@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import AuthForm from './AuthForm';
+import AuthForm from '../../components/auth/AuthForm';
 import { useDispatch, useSelector } from 'react-redux';
 import { changeField, initializeForm, loginFailure } from '@/store/module/auth';
 import { createSelector } from 'reselect';

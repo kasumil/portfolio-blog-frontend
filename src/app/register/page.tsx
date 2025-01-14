@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import AuthPlate from '@/layouts/AuthPlate';
-import RegisterForm from '@/components/auth/RegisterForm';
+import AuthPlate from '@/components/auth/AuthPlate';
+import RegisterForm from '@/containers/auth/RegisterForm';
 
 const RegisterPage = () => {
   return (

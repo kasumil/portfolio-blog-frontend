@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import Header from './Header';
+import Header from '../../components/common/Header';
 import { useDispatch, useSelector } from 'react-redux';
 import { createSelector } from '@reduxjs/toolkit';
 import { usePostLogoutMutation } from '@/lib/api/client';
