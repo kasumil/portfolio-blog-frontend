@@ -1,14 +1,19 @@
 'use client';
 
 import palette from '@/lib/styles/palette';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 import styled, { css } from 'styled-components';
 
 type Props = {
-  props: React.HTMLProps;
+  fullWidth?: boolean; // Specify optional props
+  cyan?: boolean;
+  [key: string]: any; // Allow additional props for spreading
 };
 
-const StyledButton = styled.button`
+const StyledButton = styled.button.withConfig({
+  shouldForwardProp: (prop) => prop !== 'fullWidth' && prop !== 'cyan', // 필터링
+})<Props>`
   border: none;
   border-radius: 4px;
   font-size: 1rem;
@@ -23,8 +28,14 @@ const StyledButton = styled.button`
     background: ${palette.gray[6]};
   }
 
+  &:disabled {
+    background: ${palette.gray[3]};
+    color: ${palette.gray[5]};
+    cursor: not-allowed;
+  }
+
   ${(props) =>
-    props?.fullWidth &&
+    props.fullWidth &&
     css`
       padding-top: 0.75rem;
       padding-bottom: 0.75rem;
@@ -33,7 +44,7 @@ const StyledButton = styled.button`
     `};
 
   ${(props) =>
-    props?.cyan &&
+    props.cyan &&
     css`
       background: ${palette.cyan[5]};
       &:hover {
@@ -41,8 +52,25 @@ const StyledButton = styled.button`
       }
     `};
 `;
-const Button = (props: Props) => {
-  return <StyledButton {...props} />;
+
+const Button: React.FC<Props> = ({ href, fullWidth, cyan, ...rest }) => {
+  const router = useRouter();
+  const onClick = (e) => {
+    if (href) {
+      router.push(href);
+    }
+    if (rest.onClick) {
+      rest.onClick(e);
+    }
+  };
+  return (
+    <StyledButton
+      fullWidth={fullWidth}
+      cyan={cyan}
+      onClick={onClick}
+      {...rest}
+    />
+  );
 };
 
 export default Button;

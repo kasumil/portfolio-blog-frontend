@@ -9,8 +9,22 @@
 import React, { ReactNode } from 'react';
 import { Provider as ReduxProvider } from 'react-redux';
 import { store } from './store';
+import { temSetUser } from './module/user';
 
 const CustomProvider = ({ children }: { children: ReactNode }) => {
+  const loadUser = () => {
+    try {
+      const user = localStorage.getItem('user');
+      if (!user) return;
+
+      store.dispatch(temSetUser(JSON.parse(user)));
+    } catch (e) {
+      console.log('localStorage is not working');
+    }
+  };
+
+  loadUser();
+
   return <ReduxProvider store={store}>{children}</ReduxProvider>;
 };
 

@@ -2,11 +2,17 @@ import { configureStore } from '@reduxjs/toolkit';
 import authReducer from './module/auth';
 import { apiSlice } from '@/lib/api/client';
 import useReducer from './module/user';
+import writeReducer from './module/write';
+import postReducer from './module/post';
+import postsReducer from './module/posts';
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
     user: useReducer,
+    write: writeReducer,
+    post: postReducer,
+    posts: postsReducer,
     [apiSlice.reducerPath]: apiSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>

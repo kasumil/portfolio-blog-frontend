@@ -8,8 +8,15 @@ interface UserState {
 
 const initialState: UserState = {
   user: null,
-  token: null,
   checkError: null,
+};
+
+const loginStorageRemove: void = () => {
+  try {
+    localStorage.removeItem('user');
+  } catch (e) {
+    console.log('localStorage is not working');
+  }
 };
 
 const userSlice = createSlice({
@@ -21,15 +28,21 @@ const userSlice = createSlice({
     },
     checkSuccess: (state, { payload }: PayloadAction<string>) => {
       state.user = payload.user;
-      state.token = payload.token;
       state.checkError = null;
     },
     checkFailure: (state, { payload }: PayloadAction<string>) => {
-      state = { ...initialState };
+      state.user = initialState.user;
       state.checkError = payload;
+      loginStorageRemove();
+    },
+    userLogOut: (state) => {
+      state = state;
+      state.user = null;
+      loginStorageRemove();
     },
   },
 });
 
-export const { temSetUser, checkSuccess, checkFailure } = userSlice.actions;
+export const { temSetUser, checkSuccess, checkFailure, userLogOut } =
+  userSlice.actions;
 export default userSlice.reducer;

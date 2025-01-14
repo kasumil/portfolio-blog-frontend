@@ -1,9 +1,13 @@
-'use client';
-
-import { useSelector } from 'react-redux';
+import HeaderConatiner from '@/containers/common/HeaderConatiner';
+import PaginationContainer from '@/containers/posts/PaginationContainer';
+import PostListContainer from '@/containers/posts/PostListContainer';
 
 export default function Home() {
-  const { token } = useSelector((state) => state.user);
-  console.log(token);
-  return <div>홈</div>;
+  return (
+    <>
+      <HeaderConatiner />
+      <PostListContainer />
+      <PaginationContainer />
+    </>
+  );
 }

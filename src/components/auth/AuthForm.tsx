@@ -7,9 +7,9 @@ import palette from '@/lib/styles/palette';
 
 type Props = {
   type: 'login' | 'register';
-  form: { username: string; password: string; passwordConfirm: string };
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onSubmit: (e: React.FormEvent) => void;
+  form: Object;
+  onChange: React.ChangeEvent<HTMLInputElement>;
+  onSubmit: React.FormEvent<HTMLFormElement>;
 };
 
 const textMap = {
@@ -17,23 +17,23 @@ const textMap = {
   register: '회원가입',
 };
 
-const ButtonWidthMarginTop = styled(Button)`
-  margin-top: 1rem;
-`;
-
-const Footer = styled.div`
-  margin-top: 1rem;
-  text-align: right;
-  a {
-    color: ${palette.gray[6]};
-    text-decoration: underline;
-    &:hover {
-      font-weight: bold;
-      color: ${palette.gray[9]};
-    }
-`;
-
 const AuthForm = ({ type, form, onChange, onSubmit }: Props) => {
+  const Footer = styled.div`
+    margin-top: 1rem;
+    text-align: right;
+    a {
+      color: ${palette.gray[6]};
+      text-decoration: underline;
+      &:hover {
+        font-weight: bold;
+        color: ${palette.gray[9]};
+      }
+  `;
+
+  const ButtonWidthMargintop = styled(Button)`
+    margin-top: 1rem;
+  `;
+
   const text = textMap[type];
   return (
     <>
@@ -44,14 +44,16 @@ const AuthForm = ({ type, form, onChange, onSubmit }: Props) => {
           type="text"
           value={form.username}
           onChange={onChange}
-          placeholder="아이디"
+          onSubmit={onSubmit}
+          placeholder="User name"
         />
         <InputField
           name="password"
           type="password"
           value={form.password}
           onChange={onChange}
-          placeholder="비밀번호"
+          onSubmit={onSubmit}
+          placeholder="Password"
         />
         {type === 'register' && (
           <InputField
@@ -59,19 +61,18 @@ const AuthForm = ({ type, form, onChange, onSubmit }: Props) => {
             type="password"
             value={form.passwordConfirm}
             onChange={onChange}
-            placeholder="비밀번호 확인"
+            onSubmit={onSubmit}
+            placeholder="Password Confirm"
           />
         )}
-        <ButtonWidthMarginTop cyan={true} fullWidth={true} type="submit">
+        <ButtonWidthMargintop cyan fullWidth type="submit">
           {text}
-        </ButtonWidthMarginTop>
+        </ButtonWidthMargintop>
       </form>
       <Footer>
-        {type === 'login' ? (
-          <Link href={'/register'}>회원가입</Link>
-        ) : (
-          <Link href={'/login'}>로그인</Link>
-        )}
+        <Link href={type === 'login' ? '/register' : '/login'}>
+          {type === 'login' ? 'Register' : 'Login'}
+        </Link>
       </Footer>
     </>
   );

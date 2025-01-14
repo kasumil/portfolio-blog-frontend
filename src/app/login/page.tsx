@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import AuthPlate from '@/layouts/AuthPlate';
-import LoginForm from '@/components/auth/LoginForm';
+import AuthPlate from '@/components/auth/AuthPlate';
+import LoginForm from '@/containers/auth/LoginForm';
 
 const LoginPage = () => {
   return (

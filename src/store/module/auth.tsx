@@ -63,7 +63,7 @@ const authSlice = createSlice({
     }),
     registerFailure: (state, { payload }: PayloadAction<string>) => ({
       ...state,
-      authError: payload.error,
+      authError: payload,
     }),
     loginSuccess: (state, { payload }: PayloadAction<string>) => ({
       ...state,
@@ -72,12 +72,8 @@ const authSlice = createSlice({
     }),
     loginFailure: (state, { payload }: PayloadAction<string>) => ({
       ...state,
-      authError: error,
+      authError: payload,
     }),
-    logout: (state) => {
-      // Reset only login fields
-      state.login = { ...initialState.login };
-    },
   },
 });
 
@@ -89,7 +85,6 @@ export const {
   registerFailure,
   loginSuccess,
   loginFailure,
-  logout,
 } = authSlice.actions;
 
 export default authSlice.reducer;
