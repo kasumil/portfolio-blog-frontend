@@ -16,15 +16,14 @@ const postSlice = createSlice({
   initialState,
   reducers: {
     readPostSuccess: (state, { payload }: PayloadAction<object>) => ({
+      ...state,
       post: payload,
     }),
     readPostFailure: (state, { payload }: PayloadAction<object>) => ({
       ...state,
       error: payload,
     }),
-    unloadPost: () => ({
-      state: initialState,
-    }),
+    unloadPost: () => initialState,
   },
 });
 

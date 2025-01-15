@@ -10,19 +10,14 @@ export const apiSlice = createApi({
   reducerPath: 'api',
   baseQuery: fetchBaseQuery({
     baseUrl: 'http://localhost:4000/api', // API 기본 경로
-    mode: 'cors',
+    credentials: 'include',
     prepareHeaders: (headers) => {
       // 예: 인증 토큰 추가
       const token = getCookie('access_token');
       if (token) {
         headers.set('Authorization', `Bearer ${token}`);
       }
-
       headers.set('Access-Control-Allow-Origin', '*');
-      headers.set(
-        'state',
-        JSON.stringify({ user: localStorage.getItem('user') }),
-      );
 
       // 다른 커스텀 헤더 추가
       headers.set('Content-Type', 'application/json');

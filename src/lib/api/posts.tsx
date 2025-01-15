@@ -1,3 +1,4 @@
+import { url } from 'inspector';
 import { apiSlice } from './client';
 import qs from 'qs';
 
@@ -23,11 +24,13 @@ const extendedApi = apiSlice.injectEndpoints({
       invalidatesTags: ['Post'],
     }),
     updatePost: builder.mutation({
-      query: ({ id, ...updatedPost }) => ({
-        url: `/posts/${id}`,
-        method: 'PUT',
-        body: updatedPost,
-      }),
+      query: ({ id, ...updatedPost }) => {
+        return {
+          url: `/posts/${id}`,
+          method: 'PATCH',
+          body: updatedPost,
+        };
+      },
       invalidatesTags: (result, error, { id }) => [{ type: 'Post', id }],
     }),
     deletePost: builder.mutation({

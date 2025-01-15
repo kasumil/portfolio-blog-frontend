@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { changeField } from './auth';
+import { stat } from 'fs';
 
 export interface WriteState {
   title: string | null;
@@ -7,6 +8,7 @@ export interface WriteState {
   tags: Array | null;
   post: string | null;
   postError: string | null;
+  originalPostId: number | null;
 }
 
 interface ChangeFiledTypePayload {
@@ -20,15 +22,14 @@ const initialState: WriteState = {
   tags: [],
   post: null,
   postError: null,
+  originalPostId: null,
 };
 
 const writeSlice = createSlice({
   name: 'write',
   initialState,
   reducers: {
-    initialize: (state) => {
-      state = initialState;
-    },
+    initialize: (state) => state.initialState,
     changeField: (
       state,
       { payload }: PayloadAction<ChangeFiledTypePayload>,
@@ -45,9 +46,27 @@ const writeSlice = createSlice({
     }),
     wirtePostSuccess: (state, { payload }: PayLoad<object>) => ({
       ...state,
-      post: { _id: payload._id, user: payload.user },
+      post: payload,
     }),
     writePostError: (state, { payload }: Payload<object>) => ({
+      ...state,
+      postError: payload,
+    }),
+    setOriginalPost: (state, { payload }: Payload<object>) => {
+      const { title, body, tags, _id } = payload.post;
+      return {
+        ...state,
+        title,
+        body,
+        tags,
+        originalPostId: _id,
+      };
+    },
+    updatePostSuccess: (state, { payload }: Payload<Object>) => ({
+      ...state,
+      post: payload,
+    }),
+    updatePostFailure: (state, { payload }: Payload<Object>) => ({
       ...state,
       postError: payload,
     }),
@@ -60,5 +79,8 @@ export const {
   writePost,
   wirtePostSuccess,
   writePostError,
+  setOriginalPost,
+  updatePostSuccess,
+  updatePostFailure,
 } = writeSlice.actions;
 export default writeSlice.reducer;

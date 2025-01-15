@@ -1,8 +1,12 @@
 'use client';
 
 import WriteActionButtons from '@/components/write/WriteActionButtons';
-import { useCreatePostMutation } from '@/lib/api/posts';
-import { wirtePostSuccess, writePostError } from '@/store/module/write';
+import { useCreatePostMutation, useUpdatePostMutation } from '@/lib/api/posts';
+import {
+  updatePostSuccess,
+  wirtePostSuccess,
+  writePostError,
+} from '@/store/module/write';
 import { createSelector } from '@reduxjs/toolkit';
 import { useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
@@ -15,25 +19,40 @@ const WriteActionButtonsContainer = (props: Props) => {
   const dispatch = useDispatch();
   const writeSelector = createSelector(
     (state: Object) => state.write,
-    (state: Object) => state.user,
-    (auth, user) => ({
-      title: auth.title,
-      body: auth.body,
-      tags: auth.tags,
-      post: auth.post,
-      postError: auth.postError,
-      user: user.user,
+    (write) => ({
+      title: write.title,
+      body: write.body,
+      tags: write.tags,
+      post: write.post,
+      postError: write.postError,
+      originalPostId: write.originalPostId,
     }),
   );
-  const { title, body, tags, post, postError, user } =
+  const { title, body, tags, post, postError, originalPostId } =
     useSelector(writeSelector);
 
   const [createPost, { isLoading, isError, error }] = useCreatePostMutation();
+  const [updatePost, { isLoading: updateIsloading, error: updateError }] =
+    useUpdatePostMutation();
 
   const onPublish = async () => {
     try {
-      const ret = await createPost({ title, body, tags }).unwrap();
-      dispatch(wirtePostSuccess(ret));
+      if (originalPostId) {
+        const ret = await updatePost({
+          title,
+          body,
+          tags,
+          id: originalPostId,
+        }).unwrap();
+        dispatch(updatePostSuccess(ret));
+      } else {
+        const ret = await createPost({
+          title,
+          body,
+          tags,
+        }).unwrap();
+        dispatch(wirtePostSuccess(ret));
+      }
     } catch (e) {
       console.log(e);
       dispatch(writePostError(e));
@@ -46,14 +65,20 @@ const WriteActionButtonsContainer = (props: Props) => {
 
   useEffect(() => {
     if (post) {
-      const { _id } = post;
+      const { _id, user } = post; // _id가 2개라서 헷깔리지 말것. _id는 생성물, user._id는 회원번호
       router.push(`/${user.username}/${_id}`);
     }
     if (postError) {
       console.log(postError);
     }
   }, [router, post, postError]);
-  return <WriteActionButtons onPublish={onPublish} onCancel={onCancel} />;
+  return (
+    <WriteActionButtons
+      onPublish={onPublish}
+      onCancel={onCancel}
+      isEdit={!!originalPostId}
+    />
+  );
 };
 
 export default WriteActionButtonsContainer;
